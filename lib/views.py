@@ -34,7 +34,7 @@ class IndexView(View):
 
     async def post(self) -> Response:
         try:
-            image_file, _ = self.get_image_file()
+            image_file, _ = await self.get_image_file()
             image_hash = get_image_hash(image_file)
             words_draw = self.process_image(image_file, image_hash)
             image_b64 = image_to_img_src(
