@@ -47,6 +47,8 @@
   </form>
   {% if image %}
   <div class="container col-6">
+    <label for="accuracySlider">Фильтр по минимальной уверенности (%): <span id="sliderValue">50</span>%</label>
+    <input type="range" id="accuracySlider" min="0" max="100" value="50" class="slider">
     <table class="table">
       <thead>
         <tr>
@@ -77,6 +79,29 @@
     <p class="text-center text-muted">© 2024 Академия Аналитиков Авито</p>
   </footer>
   <script src="static/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const slider = document.getElementById('accuracySlider');
+      const output = document.getElementById('sliderValue');
+      const rows = document.querySelectorAll('table tbody tr');
+
+      function updateTable() {
+        const value = parseInt(slider.value, 10);
+        output.textContent = value;
+        rows.forEach(row => {
+          const accuracy = parseFloat(row.cells[2].textContent.replace('%', ''));
+          if (accuracy >= value) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      }
+
+      slider.addEventListener('input', updateTable);
+      updateTable();  // Initial update when the page loads
+    });
+  </script>
 </body>
 
 </html>
