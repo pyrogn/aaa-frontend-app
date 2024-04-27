@@ -56,12 +56,22 @@ class IndexView(View):
 
     def process_image(self, image_file, image_hash):
         if image_hash in cache:
-            return cache[image_hash]
-        image = open_image(image_file)
-        model = self.request.app["model"]
-        words_detected = model.readtext(np.array(image))
-        cache[image_hash] = words_detected
-        return self.draw_words(image, words_detected)
+            words_detected = cache[image_hash]
+        else:
+            image = open_image(image_file)
+            model = self.request.app["model"]
+            words_detected = model.readtext(np.array(image))
+            draw = PolygonDrawer(image)
+            words_detected = [
+                {
+                    "image": image_to_img_src(draw.crop(coords)),
+                    "word": word,
+                    "accuracy": accuracy,
+                }
+                for coords, word, accuracy in words_detected
+            ]
+            cache[image_hash] = words_detected
+        return words_detected
 
     def draw_words(self, image, words_detected):
         draw = PolygonDrawer(image)
