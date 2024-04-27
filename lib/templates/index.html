@@ -23,6 +23,7 @@
 
   {% if error %}
   <div class="container alert alert-danger col-6" role="alert">
+    <h4><strong>{{ error.__class__.__name__ }}</strong></h4>
     {{ error }}
   </div>
   {% endif %}
@@ -45,25 +46,29 @@
     <button type="submit" class="btn btn-primary">Распознать</button>
   </form>
   {% if image %}
-  <table class="container table col-6">
-    <thead>
-      <tr>
-        <th scope="col">Картинка</th>
-        <th scope="col">Слово</th>
-        <th scope="col">Уверенность</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for word in words %}
-      <tr>
-        <td><img src="{{ word.image }}"/></td>
-        <td>{{ word.word }}</td>
-        <td class="{% if word.accuracy > 0.8 %} table-success {% elif word.accuracy > 0.5 %} table-warning {% else %} table-danger {% endif %}">
-          {{ "%2.2f" | format(word.accuracy * 100) }}%</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="container col-6">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Картинка</th>
+          <th scope="col">Слово</th>
+          <th scope="col">Уверенность
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for word in words %}
+        <tr>
+          <td><img src="{{ word.image }}" class="img-fluid" /></td>
+          <td>{{ word.word }}</td>
+          <td
+            class="{% if word.accuracy > 0.8 %} table-success {% elif word.accuracy > 0.5 %} table-warning {% else %} table-danger {% endif %}">
+            {{ "%2.2f" | format(word.accuracy * 100) }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% else %}
   <p class="container text-center col-6">Здесь будет таблица с распознанными словами</p>
   {% endif %}
