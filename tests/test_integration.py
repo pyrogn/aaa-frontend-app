@@ -1,9 +1,8 @@
-from unittest.mock import patch
-from unittest.mock import MagicMock
-from aiohttp import FormData
 from http import HTTPStatus
+from unittest.mock import MagicMock, patch
 
 import pytest
+from aiohttp import FormData
 
 
 async def test_index_page_contain_valid_multipart_form(client):
