@@ -5,10 +5,12 @@ help:
 	@echo "help - show this help"
 	@echo "build - build docker image"
 	@echo "test - run tests"
-	@echo "lint - run linting"
+	@echo "lint - run linting and formatting"
+	@echo "ruff - run linting"
 	@echo "format - run formatting"
 	@echo "run - start applicaion"
 	@echo "dev - start applicaion in dev mode with live reload"
+	@echo "clean - remove docker image"
 
 clean:
 	@docker rmi -f ${IMAGE}
@@ -34,23 +36,14 @@ test: build
 
 ruff: build
 	@echo 'Run ruff lint'
-# default GitHub variable https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables
-ifeq ($(CI), true) 
 	@docker run --rm -v $(PWD):/app -i ${IMAGE} \
-		ruff check ${LIB_FOLDER}
-else
-	@docker run --rm -v $(PWD):/app -i ${IMAGE} \
-		ruff check ${LIB_FOLDER} --fix
-endif
+		ruff check ${LIB_FOLDER} $(if $(CI),,--fix)
 
 format: build
 	@echo 'Run ruff format'
-ifeq ($(CI), true)
 	@docker run --rm -v $(PWD):/app -i ${IMAGE} \
-		ruff format --check ${LIB_FOLDER}
-else
-	@docker run --rm -v $(PWD):/app -i ${IMAGE} \
-		ruff format ${LIB_FOLDER}
-endif
+		ruff format ${LIB_FOLDER} $(if $(CI),--check,)
 
 lint: ruff format
+
+.PHONY: help clean build dev run test ruff format lint

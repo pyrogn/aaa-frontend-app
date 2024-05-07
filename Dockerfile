@@ -1,5 +1,7 @@
 FROM python:3.12-slim
 
+# to use uv without virtualenv
+ENV VIRTUAL_ENV=/usr/local
 ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN mkdir /app
