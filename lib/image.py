@@ -1,10 +1,9 @@
-from io import BufferedReader, BytesIO
 from base64 import b64encode
+from io import BufferedReader, BytesIO
 from typing import List, Tuple
 
-from PIL import Image
+from PIL import Image, ImageFont
 from PIL.ImageDraw import Draw
-
 
 Coords = List[List[int]]  # EasyOCR format
 Box = Tuple[int, int, int, int]  # PIL format
@@ -19,6 +18,7 @@ class PolygonDrawer:
         self._clean_image = image.copy()
         self._image = image
         self._draw = Draw(image)
+        self.font = ImageFont.truetype("/app/lib/fonts/DejaVuSans.ttf", 12)
 
     @staticmethod
     def coords_to_box(coords: Coords) -> Box:
@@ -31,7 +31,7 @@ class PolygonDrawer:
         self._draw.rectangle(box, outline="red")
         text_height = 12  # px, hardcoded
         x, y = box[:2]
-        self._draw.text((x, y - text_height), word, fill="red")
+        self._draw.text((x, y - text_height), word, fill="red", font=self.font)
 
     def crop(self, coords: Coords) -> Image:
         """Get cropped Image part"""
